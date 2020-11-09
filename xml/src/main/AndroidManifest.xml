@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.github.xml">
+    <application>
+        <provider
+            android:name=".BackgroundContentProvider"
+            android:authorities="${applicationId}.backgroundLibrary"
+            android:exported="false"
+            android:multiprocess="true" />
+    </application>
+</manifest>

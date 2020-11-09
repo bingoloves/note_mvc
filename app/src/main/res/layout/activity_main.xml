@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:ignore="MissingPrefix"
+    android:padding="10dp"
+    tools:context="com.github.note.activity.MainActivity">
+
+    <com.github.base.widget.NineGridLayout
+        android:id="@+id/nineGridLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/btn_click"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="显示网格图片"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:bl_corners_radius="4dp"
+        app:bl_ripple_enable="true"
+        app:bl_stroke_color="#8c6822"
+        app:bl_stroke_width="1dp" />
+    <Button
+        android:id="@+id/btn_keyboard"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="打开键盘"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:bl_corners_radius="4dp"
+        app:bl_ripple_enable="true"
+        app:bl_stroke_color="#8c6822"
+        app:bl_stroke_width="1dp" />
+    <Button
+        android:id="@+id/btn_form"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="表单验证"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:bl_corners_radius="4dp"
+        app:bl_ripple_enable="true"
+        app:bl_stroke_color="#8c6822"
+        app:bl_stroke_width="1dp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:gravity="center"
+        android:text="TextView"
+        android:layout_margin="10dp"
+        android:textColor="#8c6822"
+        android:textSize="18sp"
+        app:bl_corners_radius="4dp"
+        app:bl_solid_color="#E3B666"
+        app:bl_stroke_color="#8c6822"
+        app:bl_stroke_width="1dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="有波纹触摸反馈的按钮"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:bl_corners_radius="10dp"
+        app:bl_pressed_drawable="#b2e2b2"
+        app:bl_unPressed_drawable="#00fcca"
+        app:bl_ripple_color="#71C671"
+        app:bl_ripple_enable="true"
+        app:bl_stroke_color="#83228c"
+        app:bl_stroke_width="2dp"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="点击文字变色"
+        app:bl_pressed_textColor="#919DAF"
+        app:bl_unPressed_textColor="@android:color/black"/>
+
+</LinearLayout>
