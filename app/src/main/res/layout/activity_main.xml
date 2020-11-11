@@ -13,11 +13,11 @@
         android:id="@+id/nineGridLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:horizontalSpacing="10dp"
+        app:horizontalSpacing="4dp"
         app:verticalSpacing="4dp"
-        app:itemHeight="120dp"
+        app:itemHeight="90dp"
         app:columns="3"
-        app:radius="8"/>
+        app:radius="4"/>
     <Button
         android:id="@+id/btn_click"
         android:layout_width="match_parent"
@@ -82,5 +82,11 @@
         android:padding="10dp"
         android:text="Hello"
         style="@style/XMLButton.Style"/>
-
+    <com.github.base.widget.NiceImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/banner"
+        android:scaleType="centerCrop"
+        app:corner_radius="4dp"/>
 </LinearLayout>

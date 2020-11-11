@@ -113,7 +113,7 @@ public class Navigator {
             if (closeCurrntActivity){
                 activity.finish();
             }
-        },500);
+        },300);
     }
     public void navigateForResult(@NonNull Class<?> cls,int code){
         if (!canStartActivity()) return;
@@ -135,7 +135,7 @@ public class Navigator {
             if (closeCurrntActivity){
                 activity.finish();
             }
-        },500);
+        },300);
     }
     static class FragmentV4Consumer implements Consumer{
         private android.support.v4.app.Fragment fragment;

@@ -11,8 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -22,8 +20,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.github.base.R;
 import com.github.base.adapter.listview.CommonAdapter;
 import com.github.base.adapter.listview.ViewHolder;
-import com.github.base.glide.GlideRoundTransform;
-import com.github.base.utils.DensityUtils;
+import com.github.base.glide.CornerTransform;
 import com.github.base.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -94,36 +91,40 @@ public class NineGridLayout extends FrameLayout {
         gridAdapter = new CommonAdapter<String>(context, R.layout.layout_base_grid_item,list) {
             @Override
             protected void convert(ViewHolder viewHolder, String path, int position) {
-                ImageView imageView = viewHolder.getView(R.id.photoView);
-                View convertView = viewHolder.getConvertView();
-                ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
+                ImageView imageView = viewHolder.getView(R.id.imageView);
+                ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
                 layoutParams.width = itemWidth;
                 layoutParams.height = itemHeight;
-                RequestOptions requestOptions = new RequestOptions().centerCrop().override(itemWidth,itemHeight).transform(new GlideRoundTransform(context,radius));
-                Glide.with(context).load(path).apply(requestOptions).into(imageView);
+                CornerTransform transformation = new CornerTransform(context, dp2px(context, radius));
+                transformation.setExceptCorner(false, false, false, false);
+                RequestOptions requestOptions = new RequestOptions().dontAnimate()
+                        .override(itemWidth,itemHeight)
+                        .transform(transformation);
+                Glide.with(context).load(path)
+                        .apply(requestOptions)
+                        .into(imageView);
             }
         };
         mGridView.setAdapter(gridAdapter);
-        mGridView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-            public void onGlobalLayout() {
-                int width = mGridView.getWidth();
-                int newColumnWidth = (width - horizontalSpacing * (columns - 1)) / columns;
-                if (itemWidth == newColumnWidth) {
-                    return;
-                }
-                itemWidth = newColumnWidth;
-                LogUtils.e("itemWidth = " + itemWidth);
-                mGridView.setColumnWidth(itemWidth);
-                gridAdapter.notifyDataSetChanged();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    mGridView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    mGridView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            }
-        });
+//        mGridView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//            public void onGlobalLayout() {
+//                int width = mGridView.getWidth();
+//                int newColumnWidth = (width - horizontalSpacing * (columns - 1)) / columns;
+//                if (itemWidth == newColumnWidth) {
+//                    return;
+//                }
+//                itemWidth = newColumnWidth;
+//                mGridView.setColumnWidth(itemWidth);
+//                gridAdapter.notifyDataSetChanged();
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//                    mGridView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                } else {
+//                    mGridView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+//                }
+//            }
+//        });
         mGridView.setOnItemClickListener((parent, view, position, id) -> {
             if (onItemClickListener != null){
                 onItemClickListener.onClick(position);
@@ -147,6 +148,9 @@ public class NineGridLayout extends FrameLayout {
      */
     public void update(List<String> images){
         this.list = images;
+        int width = mGridView.getWidth();
+        itemWidth = (width - horizontalSpacing * (columns - 1)) / columns;
+        mGridView.setColumnWidth(itemWidth);
         gridAdapter.update(images);
     }
 
