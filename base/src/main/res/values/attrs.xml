@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="PhotoView">
-        <attr name="radius" format="dimension"/>
+    <declare-styleable name="NineGridLayout">
+        <!--图片的圆角-->
+        <attr name="radius" format="integer"/>
+        <!--网格列数-->
+        <attr name="columns" format="integer"/>
+        <!--图片的高度-->
+        <attr name="itemHeight" format="dimension"/>
+        <!--网格的水平间距-->
+        <attr name="horizontalSpacing" format="dimension"/>
+        <!--网格的垂直间距-->
+        <attr name="verticalSpacing" format="dimension"/>
     </declare-styleable>
 </resources>

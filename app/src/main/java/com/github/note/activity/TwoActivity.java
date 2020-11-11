@@ -3,14 +3,14 @@ package com.github.note.activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.github.base.core.ImmersiveActivity;
+import com.github.base.core.AbsBaseActivity;
 import com.github.base.utils.Injector;
 import com.github.base.widget.PreviewLayout;
 import com.github.note.R;
 
 import java.util.ArrayList;
 
-public class TwoActivity extends ImmersiveActivity {
+public class TwoActivity extends AbsBaseActivity {
 
     @Injector.IntentParam(name = "userName")
     String name;
@@ -25,10 +25,14 @@ public class TwoActivity extends ImmersiveActivity {
     PreviewLayout previewLayout;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_two);
-        nameTv.setText(name);
+    public int getContentView() {
+        return R.layout.activity_two;
+    }
+
+    @Override
+    public void onInitView(Bundle savedInstanceState) {
+        showToolbar(true);
+        mCommonToolbar.setCenterTitle(name);
         previewLayout.update(current,paths);
     }
 }

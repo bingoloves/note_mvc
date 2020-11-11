@@ -1,22 +1,32 @@
 package com.github.note.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import com.github.base.core.AbsBaseActivity;
+import com.github.base.utils.Navigator;
+import com.github.note.R;
 
 /**
  * Created by bingo on 2020/11/6.
  */
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends AbsBaseActivity {
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_splash);
-        new Handler().postDelayed(() -> {
-            startActivity(new Intent(SplashActivity.this,MainActivity.class));
+    public int getContentView() {
+        return R.layout.activity_splash;
+    }
+
+    @Override
+    public boolean fullScreen() {
+        return true;
+    }
+
+    @Override
+    public void onInitView(Bundle savedInstanceState) {
+         new Handler().postDelayed(() -> {
+             Navigator.with(this).withString("name","xuebing").closeCurrentActivity(true).navigate(MainActivity.class);
         },1200);
+
     }
 }

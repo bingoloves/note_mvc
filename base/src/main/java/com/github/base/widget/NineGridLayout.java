@@ -22,6 +22,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.github.base.R;
 import com.github.base.adapter.listview.CommonAdapter;
 import com.github.base.adapter.listview.ViewHolder;
+import com.github.base.glide.GlideRoundTransform;
 import com.github.base.utils.DensityUtils;
 import com.github.base.utils.LogUtils;
 
@@ -35,14 +36,18 @@ import java.util.List;
 public class NineGridLayout extends FrameLayout {
     private Context context;
     private GridView mGridView;
-    //每張圖片的宽度，单位px
-    private int desireSize = 180;
-    //图片中间的间距
-    private int columnSpace = 4;
+    //图片水平间距
+    private int horizontalSpacing;
+    //图片的垂直间距
+    private int verticalSpacing;
     //动态计算的图片宽度
-    private int columnWidth = 180;
+    private int itemWidth;
+    //动态计算的图片高度
+    private int itemHeight;
     //图片圆角
-    private int radius = 0;
+    private int radius;
+    //网格列数
+    private int columns = 4;
     private CommonAdapter<String> gridAdapter;
     private List<String> list;
     private OnItemClickListener onItemClickListener;
@@ -62,18 +67,26 @@ public class NineGridLayout extends FrameLayout {
         init(context,attrs);
     }
     private void init(Context context, AttributeSet attrs) {
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_base_grid,this);
         this.context = context;
         list = new ArrayList<>();
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_base_grid,this);
-//        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.PhotoView);
-//        try {
-//            radius = ta.getInteger(R.styleable.PhotoView_radius,0);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        } finally {
-//            ta.recycle();
-//        }
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.NineGridLayout);
+        try {
+            radius = ta.getInteger(R.styleable.NineGridLayout_radius,4);
+            itemHeight = ta.getDimensionPixelSize(R.styleable.NineGridLayout_itemHeight,dp2px(context,90));
+            horizontalSpacing = ta.getDimensionPixelSize(R.styleable.NineGridLayout_horizontalSpacing,dp2px(context,2));
+            verticalSpacing = ta.getDimensionPixelSize(R.styleable.NineGridLayout_verticalSpacing,dp2px(context,2));
+            columns = ta.getInteger(R.styleable.NineGridLayout_columns,columns);
+            LogUtils.e("radius = "+radius+"----columns = "+columns+"----horizontalSpacing = "+horizontalSpacing+"----verticalSpacing ="+verticalSpacing);
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            ta.recycle();
+        }
         mGridView = view.findViewById(R.id.grid);
+        mGridView.setNumColumns(columns);
+        mGridView.setHorizontalSpacing(horizontalSpacing);
+        mGridView.setVerticalSpacing(verticalSpacing);
         initGridView();
     }
 
@@ -82,7 +95,11 @@ public class NineGridLayout extends FrameLayout {
             @Override
             protected void convert(ViewHolder viewHolder, String path, int position) {
                 ImageView imageView = viewHolder.getView(R.id.photoView);
-                RequestOptions requestOptions = new RequestOptions().centerCrop().override(columnWidth,columnWidth);
+                View convertView = viewHolder.getConvertView();
+                ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
+                layoutParams.width = itemWidth;
+                layoutParams.height = itemHeight;
+                RequestOptions requestOptions = new RequestOptions().centerCrop().override(itemWidth,itemHeight).transform(new GlideRoundTransform(context,radius));
                 Glide.with(context).load(path).apply(requestOptions).into(imageView);
             }
         };
@@ -92,13 +109,13 @@ public class NineGridLayout extends FrameLayout {
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             public void onGlobalLayout() {
                 int width = mGridView.getWidth();
-                int numCount = width / desireSize;
-                int newColumnWidth = (width - columnSpace * (numCount - 1)) / numCount;
-                if (columnWidth == newColumnWidth) {
+                int newColumnWidth = (width - horizontalSpacing * (columns - 1)) / columns;
+                if (itemWidth == newColumnWidth) {
                     return;
                 }
-                columnWidth = newColumnWidth;
-                mGridView.setColumnWidth(columnWidth);
+                itemWidth = newColumnWidth;
+                LogUtils.e("itemWidth = " + itemWidth);
+                mGridView.setColumnWidth(itemWidth);
                 gridAdapter.notifyDataSetChanged();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     mGridView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -113,7 +130,17 @@ public class NineGridLayout extends FrameLayout {
             }
         });
     }
-
+    /**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     *
+     * @param context 上下文
+     * @param dpValue 尺寸dip
+     * @return 像素值
+     */
+    public static int dp2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
     /**
      * 动态更新数据
      * @param images

@@ -11,20 +11,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <!--启动页-->
-        <activity android:name=".activity.SplashActivity"
-            android:theme="@style/AppTheme.Launcher">
-
-        </activity>
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.MainActivity">
+
+        </activity>
         <activity android:name=".activity.TwoActivity"/>
         <activity android:name=".activity.KeyboardActivity"/>
-        <activity android:name=".activity.FormValidateActivity"/>
+        <activity android:name=".activity.FormValidateActivity" android:windowSoftInputMode="adjustResize"/>
     </application>
 
 </manifest>

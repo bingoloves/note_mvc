@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.github.base.core.AbsBaseActivity;
 import com.github.base.core.ImmersiveActivity;
 import com.github.base.utils.Injector;
 import com.github.base.utils.LogUtils;
@@ -29,7 +30,7 @@ import java.util.regex.Pattern;
 /**
  * 表单验证
  */
-public class FormValidateActivity extends ImmersiveActivity implements View.OnClickListener,Validator.ValidationListener{
+public class FormValidateActivity extends AbsBaseActivity implements View.OnClickListener,Validator.ValidationListener{
     @Injector.BindView(R.id.button)
     Button button;
 
@@ -64,9 +65,16 @@ public class FormValidateActivity extends ImmersiveActivity implements View.OnCl
     protected Validator validator;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_form_validate);
+    public int getContentView() {
+        return R.layout.activity_form_validate;
+    }
+
+    @Override
+    public void onInitView(Bundle savedInstanceState) {
+        mImmersionBar.keyboardEnable(true).init();
+        showToolbar(true);
+        mCommonToolbar.setCenterTitle("表单验证");
+        mCommonToolbar.back(v -> finish());
         validator = new Validator(this);
         validator.setValidationListener(this);
 
@@ -85,6 +93,7 @@ public class FormValidateActivity extends ImmersiveActivity implements View.OnCl
         });
         button.setOnClickListener(this);
     }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {

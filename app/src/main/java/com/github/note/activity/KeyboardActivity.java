@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.github.base.core.AbsBaseActivity;
 import com.github.base.core.ImmersiveActivity;
 import com.github.keyboard.KeyboardInputController;
 import com.github.keyboard.PopupKeyboard;
@@ -20,7 +21,7 @@ import java.util.List;
  * Created by bingo on 2020/11/6.
  */
 
-public class KeyboardActivity extends ImmersiveActivity {
+public class KeyboardActivity extends AbsBaseActivity {
     private InputView mInputView;
     private EditText mProvinceView;
 
@@ -30,10 +31,18 @@ public class KeyboardActivity extends ImmersiveActivity {
     private long mTestIndex = 0;
 
     private boolean mHideOKKey = false;
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_keyboard);
+    public int getContentView() {
+        return R.layout.activity_keyboard;
+    }
+
+    @Override
+    public void onInitView(Bundle savedInstanceState) {
+        mImmersionBar.keyboardEnable(true).init();
+        showToolbar(true);
+        mCommonToolbar.setCenterTitle("车牌键盘");
+        mCommonToolbar.back(v -> finish());
         mInputView = findViewById(R.id.input_view);
         mProvinceView = findViewById(R.id.province_value);
 
@@ -77,8 +86,8 @@ public class KeyboardActivity extends ImmersiveActivity {
                         }
                     }
                 });
-
     }
+
 
     @Override
     protected void onResume() {

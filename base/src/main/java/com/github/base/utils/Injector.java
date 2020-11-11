@@ -329,7 +329,7 @@ public class Injector {
         }
     }
 
-    /*
+    /**
      * not used:
      * case ResType.TYPE_ANIM:
      * case ResType.TYPE_ID:
@@ -337,7 +337,7 @@ public class Injector {
      * case ResType.TYPE_MENU:
      * case ResType.TYPE_STYLE:
      *
-     * */
+     */
     private static void _injectRes(ViewFinder viewFinder, Resources res, Field field) throws IllegalAccessException, IllegalArgumentException {
         Res _Res = field.getAnnotation(Res.class);
         if (null == _Res) {
