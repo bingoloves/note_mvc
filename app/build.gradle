@@ -34,5 +34,12 @@ dependencies {
     implementation project(':base')
     implementation project(':xml')
     implementation project(':keyboard')
+    //表单验证
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
+    //内存泄漏检测工具
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    //图片选择框架
+    implementation 'com.github.wildma:PictureSelector:1.2.0'
 }

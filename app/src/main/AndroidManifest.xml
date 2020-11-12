@@ -21,7 +21,7 @@
         <activity android:name=".activity.MainActivity">
 
         </activity>
-        <activity android:name=".activity.TwoActivity"/>
+        <activity android:name=".activity.PreviewActivity"/>
         <activity android:name=".activity.KeyboardActivity"/>
         <activity android:name=".activity.FormValidateActivity" android:windowSoftInputMode="adjustResize"/>
     </application>

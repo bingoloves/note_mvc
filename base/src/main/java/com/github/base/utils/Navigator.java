@@ -1,21 +1,17 @@
 package com.github.base.utils;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
+import android.view.View;
 import com.github.base.R;
-
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by bingo on 2020/11/11.
@@ -30,6 +26,7 @@ import java.util.Map;
 public class Navigator {
     private Intent intent;
     private Consumer consumer;
+    private View shareView;
     private boolean closeCurrntActivity = false;//跳转是否关闭当前页面,默认不关闭
     private static long lastStartActivityTime;//最近启动activity的时间间隔
     private int[] enterAnim = {R.anim.slide_in_right, R.anim.slide_out_left};
@@ -83,16 +80,28 @@ public class Navigator {
         return this;
     }
 
+    /**
+     * 只在图片预览时才使用
+     * @param view
+     * @return
+     */
+    public Navigator preview(View view){
+        this.shareView = view;
+        return this;
+    }
+
     public Navigator withSerializable(String key,Serializable value){
         intent.putExtra(key,value);
         return this;
     }
-    public Navigator withEnterAnim(int[] anim){
-        this.enterAnim = anim;
+    public Navigator withEnterAnim(int enterAnim, int exitAnim){
+        this.enterAnim[0] = enterAnim;
+        this.enterAnim[1] = exitAnim;
         return this;
     }
-    public Navigator withExitAnim(int[] anim){
-        this.exitAnim = anim;
+    public Navigator withExitAnim(int enterAnim, int exitAnim){
+        this.exitAnim[0] = enterAnim;
+        this.exitAnim[1] = exitAnim;
         return this;
     }
     public Navigator closeCurrentActivity(boolean close){
@@ -106,14 +115,17 @@ public class Navigator {
         Activity activity = consumer.getActivity();
         navigatorCache = new NavigatorCache(cls,exitAnim);
         intent.setClass(activity,cls);
-        activity.startActivity(intent);
-        activity.overridePendingTransition(enterAnim[0],enterAnim[1]);
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            if (closeCurrntActivity){
-                activity.finish();
-            }
-        },300);
+        if (shareView != null){
+            ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, shareView,ViewCompat.getTransitionName(shareView));
+            activity.startActivity(intent,transitionActivityOptions.toBundle());
+        } else {
+            activity.startActivity(intent);
+            activity.overridePendingTransition(enterAnim[0],enterAnim[1]);
+        }
+        if (closeCurrntActivity){
+            Handler handler = new Handler();
+            handler.postDelayed(() -> activity.finish(),300);
+        }
     }
     public void navigateForResult(@NonNull Class<?> cls,int code){
         if (!canStartActivity()) return;
@@ -130,12 +142,10 @@ public class Navigator {
             ((android.support.v4.app.Fragment) object).startActivityForResult(intent,code);
         }
         activity.overridePendingTransition(enterAnim[0],enterAnim[1]);
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            if (closeCurrntActivity){
-                activity.finish();
-            }
-        },300);
+        if (closeCurrntActivity){
+            Handler handler = new Handler();
+            handler.postDelayed(() -> activity.finish(),300);
+        }
     }
     static class FragmentV4Consumer implements Consumer{
         private android.support.v4.app.Fragment fragment;

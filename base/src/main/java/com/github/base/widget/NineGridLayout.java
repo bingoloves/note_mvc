@@ -3,6 +3,7 @@ package com.github.base.widget;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,10 +22,14 @@ import com.github.base.R;
 import com.github.base.adapter.listview.CommonAdapter;
 import com.github.base.adapter.listview.ViewHolder;
 import com.github.base.glide.CornerTransform;
+import com.github.base.glide.PreviewInfo;
 import com.github.base.utils.LogUtils;
+import com.previewlibrary.GPreviewBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by bingo on 2020/11/5.
@@ -48,7 +53,9 @@ public class NineGridLayout extends FrameLayout {
     private CommonAdapter<String> gridAdapter;
     private List<String> list;
     private OnItemClickListener onItemClickListener;
-
+    private List<PreviewInfo> previewInfos;
+    //gridView的位置
+    private final int[] location = new int[2];
     public NineGridLayout(@NonNull Context context) {
         super(context);
         init(context,null);
@@ -67,6 +74,7 @@ public class NineGridLayout extends FrameLayout {
         View view = LayoutInflater.from(context).inflate(R.layout.layout_base_grid,this);
         this.context = context;
         list = new ArrayList<>();
+        previewInfos = new ArrayList<>();
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.NineGridLayout);
         try {
             radius = ta.getInteger(R.styleable.NineGridLayout_radius,4);
@@ -100,6 +108,9 @@ public class NineGridLayout extends FrameLayout {
                 RequestOptions requestOptions = new RequestOptions().dontAnimate()
                         .override(itemWidth,itemHeight)
                         .transform(transformation);
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    imageView.setTransitionName("preview"+position);
+//                }
                 Glide.with(context).load(path)
                         .apply(requestOptions)
                         .into(imageView);
@@ -127,9 +138,32 @@ public class NineGridLayout extends FrameLayout {
 //        });
         mGridView.setOnItemClickListener((parent, view, position, id) -> {
             if (onItemClickListener != null){
-                onItemClickListener.onClick(position);
+                computeBoundsBackward(mGridView.getFirstVisiblePosition());
+                ImageView imageView = view.findViewById(R.id.imageView);
+                onItemClickListener.onClick(previewInfos,imageView,position);
             }
         });
+    }
+    /**
+     ** 查找信息
+     * 从第一个完整可见item逆序遍历，如果初始位置为0，则不执行方法内循环
+     */
+    private void computeBoundsBackward(int firstCompletelyVisiblePos) {
+        mGridView.getLocationOnScreen(location);
+        for (int i = firstCompletelyVisiblePos;i < list.size(); i++) {
+            ViewHolder viewHolder = gridAdapter.getViewHolders().get(i);
+            Rect bounds = new Rect();
+            if (viewHolder != null) {
+                ImageView thumbView = (ImageView) viewHolder.getView(R.id.imageView);
+                if (i == firstCompletelyVisiblePos){
+                    bounds.set(location[0],location[1],location[0]+itemWidth,location[1]+itemHeight);
+                    thumbView.getGlobalVisibleRect(bounds);
+                } else {
+                    thumbView.getGlobalVisibleRect(bounds);
+                }
+            }
+            previewInfos.get(i).setBounds(bounds);
+        }
     }
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
@@ -152,8 +186,13 @@ public class NineGridLayout extends FrameLayout {
         itemWidth = (width - horizontalSpacing * (columns - 1)) / columns;
         mGridView.setColumnWidth(itemWidth);
         gridAdapter.update(images);
+        setPreviewInfo();
     }
-
+    private void setPreviewInfo(){
+        for (String path : list) {
+            previewInfos.add(new PreviewInfo(path));
+        }
+    }
     /**
      * 设置点击事件
      * @param listener
@@ -162,6 +201,6 @@ public class NineGridLayout extends FrameLayout {
         this.onItemClickListener = listener;
     }
     public interface OnItemClickListener{
-        void onClick(int position);
+        void onClick(List<PreviewInfo> previewInfos,View view,int position);
     }
 }

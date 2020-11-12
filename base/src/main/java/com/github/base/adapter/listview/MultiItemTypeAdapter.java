@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MultiItemTypeAdapter<T> extends BaseAdapter {
     protected Context mContext;
     protected List<T> mDatas;
-
+    protected Map<Integer,ViewHolder> cache;
     private ItemViewDelegateManager mItemViewDelegateManager;
 
 
@@ -19,6 +21,7 @@ public class MultiItemTypeAdapter<T> extends BaseAdapter {
         this.mContext = context;
         this.mDatas = datas;
         mItemViewDelegateManager = new ItemViewDelegateManager();
+        cache = new HashMap<>();
     }
 
     public MultiItemTypeAdapter addItemViewDelegate(ItemViewDelegate<T> itemViewDelegate) {
@@ -61,8 +64,7 @@ public class MultiItemTypeAdapter<T> extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
             viewHolder.mPosition = position;
         }
-
-
+        cache.put(position,viewHolder);
         convert(viewHolder, getItem(position), position);
         return viewHolder.getConvertView();
     }
@@ -87,6 +89,10 @@ public class MultiItemTypeAdapter<T> extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    public Map<Integer, ViewHolder> getViewHolders() {
+        return cache;
     }
 
     public void update(List<T> data){
