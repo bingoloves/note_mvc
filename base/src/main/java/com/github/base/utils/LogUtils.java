@@ -18,9 +18,12 @@ import android.support.v4.util.SimpleArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.github.base.debug.LoggerInfo;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.simple.eventbus.EventBus;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -1372,5 +1375,16 @@ public final class LogUtils {
      */
     public static boolean isSDCardEnableByEnvironment() {
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
+    }
+
+    public static void debugLog(Object object){
+        LogUtils.d(object);
+        int type = D;
+        String tag = CONFIG.getGlobalTag();
+        TagHead tagHead = processTagAndHead(tag);
+        Log.e("bingo",TextUtils.join("|",tagHead.consoleHead));
+        int type_high = type & 0xf0;
+        String body = formatObject(type_high, object);
+        EventBus.getDefault().postSticky(new LoggerInfo(type, CONFIG.getGlobalTag(), body));
     }
 }

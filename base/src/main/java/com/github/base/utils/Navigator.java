@@ -26,7 +26,6 @@ import java.util.List;
 public class Navigator {
     private Intent intent;
     private Consumer consumer;
-    private View shareView;
     private boolean closeCurrntActivity = false;//跳转是否关闭当前页面,默认不关闭
     private static long lastStartActivityTime;//最近启动activity的时间间隔
     private int[] enterAnim = {R.anim.slide_in_right, R.anim.slide_out_left};
@@ -80,16 +79,6 @@ public class Navigator {
         return this;
     }
 
-    /**
-     * 只在图片预览时才使用
-     * @param view
-     * @return
-     */
-    public Navigator preview(View view){
-        this.shareView = view;
-        return this;
-    }
-
     public Navigator withSerializable(String key,Serializable value){
         intent.putExtra(key,value);
         return this;
@@ -115,13 +104,8 @@ public class Navigator {
         Activity activity = consumer.getActivity();
         navigatorCache = new NavigatorCache(cls,exitAnim);
         intent.setClass(activity,cls);
-        if (shareView != null){
-            ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, shareView,ViewCompat.getTransitionName(shareView));
-            activity.startActivity(intent,transitionActivityOptions.toBundle());
-        } else {
-            activity.startActivity(intent);
-            activity.overridePendingTransition(enterAnim[0],enterAnim[1]);
-        }
+        activity.startActivity(intent);
+        activity.overridePendingTransition(enterAnim[0],enterAnim[1]);
         if (closeCurrntActivity){
             Handler handler = new Handler();
             handler.postDelayed(() -> activity.finish(),300);

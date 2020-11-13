@@ -65,6 +65,26 @@
                 android:text="图片选择"
                 android:textColor="@android:color/black"
                 style="@style/XMLRadius.Blue" />
+            <Button
+                android:id="@+id/btn_float_open"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="悬浮窗口打开"
+                android:textColor="@android:color/black"
+                style="@style/XMLRadius.Blue" />
+            <Button
+                android:id="@+id/btn_float_close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="悬浮窗口关闭"
+                android:textColor="@android:color/black"
+                style="@style/XMLRadius.Blue" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -102,12 +122,11 @@
             <com.github.base.widget.NiceImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="200dp"
                 android:src="@drawable/banner"
                 android:scaleType="centerCrop"
                 app:corner_radius="4dp"/>
         </LinearLayout>
     </ScrollView>
-
 
 </LinearLayout>

@@ -1,6 +1,5 @@
 package com.github.base.core;
 
-import android.app.Activity;
 import android.app.Application;
 
 import com.github.base.utils.LogUtils;
@@ -23,6 +22,9 @@ public abstract class BaseApplication extends Application{
         initLog();
     }
 
+    /**
+     * 初始化自定义Log工具
+     */
     private void initLog(){
         LogUtils.getConfig()
                 .setLogSwitch(isDebug())// 设置 log 总开关，包括输出到控制台和文件，默认开
